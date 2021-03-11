@@ -28,6 +28,7 @@ void setup() {
     delay(200);
     digitalWrite(ledPin, LOW);
   }
+  delay(1000); //delay start for PIR?
 }
 
 void loop() {
@@ -42,7 +43,7 @@ void loop() {
         if (val == HIGH) {
           PIREvents++;
         }
-        Serial.print("Motion detected! PIR: " );
+        Serial.print("Motion detected! PIREvents: " );
         Serial.print(PIREvents);
         Serial.print(", beamEvents: ");
         Serial.println(beamEvents);
