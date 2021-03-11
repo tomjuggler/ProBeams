@@ -43,6 +43,9 @@ void loop() {
         if (val == HIGH) {
           PIREvents++;
         }
+        if(reading == HIGH && val == HIGH){
+          Serial.println("BEAM AND PIR!!!");
+        }
         Serial.print("Motion detected! PIREvents: " );
         Serial.print(PIREvents);
         Serial.print(", beamEvents: ");
