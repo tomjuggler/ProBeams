@@ -3,16 +3,20 @@
 //code by Tom Hastings
 //license GPL v3
 
-const int ledPin = 2; //for RED indicator LED
+const int ledPin = LED_BUILTIN; //for RED indicator LED. Was 2 here..
 const int beamPin = 8; //beam
+const int PIRPin = 2; //PIR motion sensor - should be pin 10
 int piezoPin = 5;
 long currentMillis = 0;
 long previousMillis = 0;
+int val = 0;  // variable to store the sensor status (value)
+int reading = 0; //beamPin reading
 
 void setup() {
   Serial.begin(9600);  
   pinMode(ledPin, OUTPUT);
   pinMode(beamPin, INPUT);
+  pinMode(PIRPin, INPUT);
   //test LED:  
     for (int i = 0; i < 3; i++) {
       digitalWrite(ledPin, HIGH);
@@ -22,10 +26,13 @@ void setup() {
 }
 
 void loop() {
-int reading = digitalRead(beamPin);
+reading = digitalRead(beamPin);
+val = digitalRead(PIRPin);
   if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
-    if (reading==HIGH) {
+    if (reading==HIGH || val==HIGH) {
+      Serial.println("high");
       digitalWrite(ledPin, HIGH); //switch on LED if triggered
+      /*
       for(int i = 0; i < 5000; i++){
       tone(piezoPin, 1000*i, 5000);
       tone(piezoPin, 200, 5000);
@@ -38,8 +45,10 @@ int reading = digitalRead(beamPin);
       tone(piezoPin, 200, 50000);
      tone(piezoPin, 300000, 500);
       }
+      */
        } else {
-//      digitalWrite(ledPin, LOW); //if you want the LED to switch off after it is triggered. Otherwise the LED stays on. 
+        Serial.println("low");
+      digitalWrite(ledPin, LOW); //if you want the LED to switch off after it is triggered. Otherwise the LED stays on. 
     }
     previousMillis = millis();
   }
