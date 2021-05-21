@@ -18,7 +18,7 @@ int beamEvents = 0;
 int state = LOW;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
   pinMode(beamPin, INPUT);
   pinMode(PIRPin, INPUT);
@@ -32,7 +32,8 @@ void setup() {
 }
 
 void loop() {
-  reading = digitalRead(beamPin);
+  reading = LOW;
+//  reading = digitalRead(beamPin);
   val = digitalRead(PIRPin);
   if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
     if (reading == HIGH || val == HIGH) {
@@ -59,8 +60,9 @@ void loop() {
         state = HIGH;       // update variable state to HIGH
       }
 
-      //      Serial.println("high");
+//      Serial.println("high");
       digitalWrite(ledPin, HIGH); //switch on LED if triggered
+
       /*
         for(int i = 0; i < 5000; i++){
         tone(piezoPin, 1000*i, 5000);
