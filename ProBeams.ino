@@ -39,7 +39,7 @@ void setup() {
     delay(200);
     digitalWrite(ledPin, LOW);
   }
-  delay(1000); //delay start for PIR?
+//  delay(1000); //delay start for PIR?
 }
 
 void loop() {
@@ -59,8 +59,8 @@ void loop() {
           Serial.print(PIREvents);
           Serial.print(", beamEvents: ");
           Serial.println(beamEvents);
-          longTone();
-          state = HIGH;          
+          longTone(); //disabled for test only
+          state = HIGH; //disabled for test only
         }
         // PIR:
         if (val == HIGH) {
@@ -69,9 +69,9 @@ void loop() {
           Serial.print(PIREvents);
           Serial.print(", beamEvents: ");
           Serial.println(beamEvents);
-          shortTone();
+          shortTone(); //- the right one for PIR
 //           testTone(); //testing
-//           state = HIGH;
+//           state = HIGH; //causing the beam not to work here? needs to be disabled, only enable for testing
         }
 
         //        if (reading == HIGH && val == HIGH) {
