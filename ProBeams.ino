@@ -47,29 +47,31 @@ void loop() {
   val = digitalRead(PIRPin);
   if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
 
-  if (reading == HIGH){
-//    if (reading == HIGH || val == HIGH) {
+//  if (reading == HIGH){
+    if (reading == HIGH || val == HIGH) {
       previousMillis = millis();
       if (state == LOW) {
         //BEAM:
+        
         if (reading == HIGH) {
           beamEvents++;
-          longTone();
-          state = HIGH;
           Serial.print("Motion detected! PIREvents: " );
           Serial.print(PIREvents);
           Serial.print(", beamEvents: ");
           Serial.println(beamEvents);
+          longTone();
+          state = HIGH;          
         }
         // PIR:
         if (val == HIGH) {
           PIREvents++;
-          //          testTone(); //being set off regardless, why
-          //          state = HIGH;
           Serial.print("Motion detected! PIREvents: " );
           Serial.print(PIREvents);
           Serial.print(", beamEvents: ");
           Serial.println(beamEvents);
+          shortTone();
+//           testTone(); //testing
+//           state = HIGH;
         }
 
         //        if (reading == HIGH && val == HIGH) {
