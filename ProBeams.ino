@@ -22,13 +22,13 @@ int state = LOW;
 // https://github.com/connornishijima/arduino-volume#supported-pins
 void setup() {
   state = LOW;
-//  vol.begin(); // After calling this, delay() and delayMicroseconds will no longer work
-//  // correctly! Instead, use delay() and delayMicroseconds() for
-//  // the correct timing
-//
-//  vol.setMasterVolume(1.00); // Self-explanatory enough, right? Try lowering this value if the speaker is too loud! (0.00 - 1.00)
-//  delay(500);
-  
+  //  vol.begin(); // After calling this, delay() and delayMicroseconds will no longer work
+  //  // correctly! Instead, use delay() and delayMicroseconds() for
+  //  // the correct timing
+  //
+  //  vol.setMasterVolume(1.00); // Self-explanatory enough, right? Try lowering this value if the speaker is too loud! (0.00 - 1.00)
+  //  delay(500);
+
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
   pinMode(beamPin, INPUT);
@@ -46,8 +46,9 @@ void loop() {
   reading = digitalRead(beamPin);
   val = digitalRead(PIRPin);
   if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
-    
-    if (reading == HIGH || val == HIGH) {
+
+  if (reading == HIGH){
+//    if (reading == HIGH || val == HIGH) {
       previousMillis = millis();
       if (state == LOW) {
         //BEAM:
@@ -55,85 +56,77 @@ void loop() {
           beamEvents++;
           longTone();
           state = HIGH;
+          Serial.print("Motion detected! PIREvents: " );
+          Serial.print(PIREvents);
+          Serial.print(", beamEvents: ");
+          Serial.println(beamEvents);
         }
         // PIR:
         if (val == HIGH) {
           PIREvents++;
-//          testTone(); //being set off regardless, why
-//          state = HIGH;
+          //          testTone(); //being set off regardless, why
+          //          state = HIGH;
+          Serial.print("Motion detected! PIREvents: " );
+          Serial.print(PIREvents);
+          Serial.print(", beamEvents: ");
+          Serial.println(beamEvents);
         }
-        
-        if (reading == HIGH && val == HIGH) {
-          Serial.println("BEAM AND PIR!!!");
-          for (int i = 0; i < 5; i++) {
-            digitalWrite(ledPin, HIGH);
-            delay(100);
-            digitalWrite(ledPin, LOW);
-          }
-        }
-        Serial.print("Motion detected! PIREvents: " );
-        Serial.print(PIREvents);
-        Serial.print(", beamEvents: ");
-        Serial.println(beamEvents);
 
-//        state = HIGH;       // update variable state to HIGH
+        //        if (reading == HIGH && val == HIGH) {
+        //          Serial.println("BEAM AND PIR!!!");
+        //          for (int i = 0; i < 5; i++) {
+        //            digitalWrite(ledPin, HIGH);
+        //            delay(100);
+        //            digitalWrite(ledPin, LOW);
+        //          }
+        //        }
+
+
+        //        state = HIGH;       // update variable state to HIGH
       }
 
       //      Serial.println("high");
       digitalWrite(ledPin, HIGH); //switch on LED if triggered
-      
-      /*
-        for(int i = 0; i < 5000; i++){
-        tone(piezoPin, 1000*i, 5000);
-        tone(piezoPin, 200, 5000);
-        tone(piezoPin, 300000, 5000);
-        }
-        //crazy long alarm beeps:
-        for(int i = 0; i < 20; i++){
-        tone(piezoPin, 1000*i, 5000);
-        delay(5000);
-        tone(piezoPin, 200, 50000);
-        tone(piezoPin, 300000, 500);
-        }
-        */
-      
+
+
+
     } else {
       if (state == HIGH) {
         Serial.println("Motion stopped!");
         state = LOW;
-//        if (millis() - previousMillis > alarmLength) { //delay before switching off
-//          state = LOW;       // update variable state to LOW
-//        }
+        //        if (millis() - previousMillis > alarmLength) { //delay before switching off
+        //          state = LOW;       // update variable state to LOW
+        //        }
       }
       //        Serial.println("low");
       digitalWrite(ledPin, LOW); //if you want the LED to switch off after it is triggered. Otherwise the LED stays on.
     }
-    
+
   }
 }
 
-void testTone(){
-  for(int i = 0; i < 100; i++){
-        tone(piezoPin, 1000*i, 5000);
-        tone(piezoPin, 200, 5000);
-        tone(piezoPin, 300000, 5000);
-        }
+void testTone() {
+  for (int i = 0; i < 100; i++) {
+    tone(piezoPin, 1000 * i, 5000);
+    tone(piezoPin, 200, 5000);
+    tone(piezoPin, 300000, 5000);
+  }
 }
 
-void shortTone(){
-  for(int i = 0; i < 5000; i++){
-        tone(piezoPin, 1000*i, 5000);
-        tone(piezoPin, 200, 5000);
-        tone(piezoPin, 300000, 5000);
-        }
+void shortTone() {
+  for (int i = 0; i < 5000; i++) {
+    tone(piezoPin, 1000 * i, 5000);
+    tone(piezoPin, 200, 5000);
+    tone(piezoPin, 300000, 5000);
+  }
 }
-void longTone(){
-  for(int i = 0; i < 20; i++){
-        tone(piezoPin, 1000*i, 5000);
-        delay(5000);
-        tone(piezoPin, 200, 50000);
-        tone(piezoPin, 300000, 500);
-        }
+void longTone() {
+  for (int i = 0; i < 20; i++) {
+    tone(piezoPin, 1000 * i, 5000);
+    delay(5000);
+    tone(piezoPin, 200, 50000);
+    tone(piezoPin, 300000, 500);
+  }
 }
 //void wolfWhistle() {
 //  int f = 122; // starting frequency
