@@ -14,7 +14,7 @@ int reading = 0; //beamPin reading
 long alarmLength = 20000;
 //save events counter:
 int PIREvents = 0;
-int beamEvents = -1;
+int beamEvents = 0;
 int state = LOW;
 //#include "Volume.h" // Include the Volume library
 
@@ -47,7 +47,7 @@ void setup() {
   switch (option)
   {
     case 0: //option is 0, beam only
-    Serial.println("Beam only here");
+      Serial.println("Beam only here");
       pinMode(beamPin, INPUT);
       //test LED:
 
@@ -57,7 +57,7 @@ void setup() {
       delay(200);
       break;
     case 1: //option is 1, PIR and beam
-    Serial.println("PIR and Beam here");
+      Serial.println("PIR and Beam here");
       pinMode(PIRPin, INPUT);
       pinMode(beamPin, INPUT);
       //test LED:
@@ -72,6 +72,7 @@ void setup() {
       // do nothing
       break;
   }
+  delay(2000); //delay for PIR?
 }
 
 void loop() {
@@ -89,7 +90,25 @@ void loop() {
       break;
   }
 }
-  void beamOnly() {
+void beamOnly() {
+  reading = digitalRead(beamPin);
+  if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
+    
+    if (reading == HIGH) {
+      previousMillis = millis();
+      digitalWrite(ledPin, HIGH); //switch on LED if triggered
+      Serial.println("beam triggered");
+      beamEvents++;
+      Serial.print(", beamEvents: ");
+          Serial.println(beamEvents);
+//      longTone();
+    } else {
+      //      digitalWrite(ledPin, LOW); //if you want the LED to switch off after it is triggered. Otherwise the LED stays on.
+    }
+    
+
+  }
+  /*
     reading = digitalRead(beamPin);
     val = digitalRead(PIRPin);
     if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
@@ -119,91 +138,91 @@ void loop() {
       }
 
     }
-  }
+  */
+}
 
-  void allOn() {
-    reading = digitalRead(beamPin);
-    val = digitalRead(PIRPin);
-    if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
-      if (reading == HIGH || val == HIGH) {
-        previousMillis = millis();
-        if (state == LOW) {
-          //BEAM:
+void allOn() {
+  reading = digitalRead(beamPin);
+  val = digitalRead(PIRPin);
+  if (millis() - previousMillis > 50) { //only check every 50ms? seems to work great!
+    if (reading == HIGH || val == HIGH) {
+      previousMillis = millis();
+      if (state == LOW) {
+        //BEAM:
 
-          if (reading == HIGH) {
-            beamEvents++;
-            Serial.print("Motion detected! PIREvents: " );
-            Serial.print(PIREvents);
-            Serial.print(", beamEvents: ");
-            Serial.println(beamEvents);
-            longTone(); //disabled for test only
-            state = HIGH; //disabled for test only
-          }
-          // PIR:
-          if (val == HIGH) {
-            PIREvents++;
-            Serial.print("Motion detected! PIREvents: " );
-            Serial.print(PIREvents);
-            Serial.print(", beamEvents: ");
-            Serial.println(beamEvents);
-            shortTone(); //- the right one for PIR
-            //           testTone(); //testing
-            //           state = HIGH; //causing the beam not to work here? needs to be disabled, only enable for testing
-          }
-
-          //        if (reading == HIGH && val == HIGH) {
-          //          Serial.println("BEAM AND PIR!!!");
-          //          for (int i = 0; i < 5; i++) {
-          //            digitalWrite(ledPin, HIGH);
-          //            delay(100);
-          //            digitalWrite(ledPin, LOW);
-          //          }
-          //        }
-
-
-          //        state = HIGH;       // update variable state to HIGH
+        if (reading == HIGH) {
+          beamEvents++;
+          Serial.print("Motion detected! PIREvents: " );
+          Serial.print(PIREvents);
+          Serial.print(", beamEvents: ");
+          Serial.println(beamEvents);
+//          longTone(); //disabled for test only
+          state = HIGH; //disabled for test only
+        }
+        // PIR:
+        if (val == HIGH) {
+          PIREvents++;
+          Serial.print("Motion detected! PIREvents: " );
+          Serial.print(PIREvents);
+          Serial.print(", beamEvents: ");
+          Serial.println(beamEvents);
+//          shortTone(); //- the right one for PIR
+          //           testTone(); //testing
+          //           state = HIGH; //causing the beam not to work here? needs to be disabled, only enable for testing
         }
 
-        //      Serial.println("high");
-        digitalWrite(ledPin, HIGH); //switch on LED if triggered
+        //        if (reading == HIGH && val == HIGH) {
+        //          Serial.println("BEAM AND PIR!!!");
+        //          for (int i = 0; i < 5; i++) {
+        //            digitalWrite(ledPin, HIGH);
+        //            delay(100);
+        //            digitalWrite(ledPin, LOW);
+        //          }
+        //        }
 
 
-
-      } else {
-        if (state == HIGH) {
-          Serial.println("Motion stopped!");
-          state = LOW;
-          //        if (millis() - previousMillis > alarmLength) { //delay before switching off
-          //          state = LOW;       // update variable state to LOW
-          //        }
-        }
-        //        Serial.println("low");
-        digitalWrite(ledPin, LOW); //if you want the LED to switch off after it is triggered. Otherwise the LED stays on.
+        //        state = HIGH;       // update variable state to HIGH
       }
 
-    }
-  }
-  void testTone() {
-    for (int i = 0; i < 100; i++) {
-      tone(piezoPin, 1000 * i, 5000);
-      tone(piezoPin, 200, 5000);
-      tone(piezoPin, 300000, 5000);
-    }
-  }
+      //      Serial.println("high");
+      digitalWrite(ledPin, HIGH); //switch on LED if triggered
 
-  void shortTone() {
-    for (int i = 0; i < 5000; i++) {
-      tone(piezoPin, 1000 * i, 5000);
-      tone(piezoPin, 200, 5000);
-      tone(piezoPin, 300000, 5000);
+
+
+    } else {
+      if (state == HIGH) {
+        Serial.println("Motion stopped!");
+        state = LOW;
+        //        if (millis() - previousMillis > alarmLength) { //delay before switching off
+        //          state = LOW;       // update variable state to LOW
+        //        }
+      }
+      //        Serial.println("low");
+      digitalWrite(ledPin, LOW); //if you want the LED to switch off after it is triggered. Otherwise the LED stays on.
     }
+
   }
-  void longTone() {
-    for (int i = 0; i < 20; i++) {
-      tone(piezoPin, 1000 * i, 5000);
-      delay(5000);
-      tone(piezoPin, 200, 50000);
-      tone(piezoPin, 300000, 500);
-    }
+}
+void testTone() {
+  for (int i = 0; i < 100; i++) {
+    tone(piezoPin, 1000 * i, 5000);
+    tone(piezoPin, 200, 5000);
+    tone(piezoPin, 300000, 5000);
   }
-  
+}
+
+void shortTone() {
+  for (int i = 0; i < 5000; i++) {
+    tone(piezoPin, 1000 * i, 5000);
+    tone(piezoPin, 200, 5000);
+    tone(piezoPin, 300000, 5000);
+  }
+}
+void longTone() {
+  for (int i = 0; i < 20; i++) {
+    tone(piezoPin, 1000 * i, 5000);
+    delay(5000);
+    tone(piezoPin, 200, 50000);
+    tone(piezoPin, 300000, 500);
+  }
+}
