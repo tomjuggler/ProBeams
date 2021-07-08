@@ -101,7 +101,7 @@ void beamOnly() {
       beamEvents++;
       Serial.print(", beamEvents: ");
           Serial.println(beamEvents);
-//      longTone();
+      longTone();
     } else {
       //      digitalWrite(ledPin, LOW); //if you want the LED to switch off after it is triggered. Otherwise the LED stays on.
     }
@@ -156,7 +156,7 @@ void allOn() {
           Serial.print(PIREvents);
           Serial.print(", beamEvents: ");
           Serial.println(beamEvents);
-//          longTone(); //disabled for test only
+          longTone(); //disabled for test only
           state = HIGH; //disabled for test only
         }
         // PIR:
@@ -166,7 +166,7 @@ void allOn() {
           Serial.print(PIREvents);
           Serial.print(", beamEvents: ");
           Serial.println(beamEvents);
-//          shortTone(); //- the right one for PIR
+          shortTone(); //- the right one for PIR
           //           testTone(); //testing
           //           state = HIGH; //causing the beam not to work here? needs to be disabled, only enable for testing
         }
